@@ -12,7 +12,7 @@ class HelloWorld(Resource):
 
     
 @api.route('/<name>')
-class HelloWorld(Resource):
+class HelloName(Resource):
     def get(self, name):
         return {'hello': name}
     
