@@ -1,13 +1,13 @@
 import requests
 
-url = 'https://lkhhg706o4.execute-api.ap-northeast-3.amazonaws.com/dev'
+url = ''
 
 response = requests.get(url)
 print(response.text)
 
 submit_data = {
     'user_id': 'TaroYamada',
-    'password': 'PaSSwd4TY'
+    'password': 'Pass'
 }
 
 new_url = url + '/kake'
