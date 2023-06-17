@@ -1,21 +1,25 @@
-from flask import Flask
-from flask_restx import Api, Resource
+from flask import Flask,Blueprint
+from flask_restx import Api, Resource, Namespace
+
 
 app = Flask(__name__)
-api = Api(app)
+api = Api(app, version='1.0', title='API', description='A simple API')
 
-
+@api.route('/image')
+class ImageConversion(Resource):
+    def post(self):
+        return {'image': 'image', 'message': 'success'}
+    
 @api.route('/hello')
 class HelloWorld(Resource):
     def get(self):
         return {'hello': 'world'}
 
     
-@api.route('/<name>')
+@api.route('/name/<name>')
 class HelloName(Resource):
     def get(self, name):
         return {'hello': name}
-    
 
 if __name__ == '__main__':
     app.run(debug=True)
