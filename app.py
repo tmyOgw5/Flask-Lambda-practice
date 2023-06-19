@@ -17,8 +17,7 @@ api.models[get.resource_fields.name] = get.resource_fields
 api.models[post.resource_fields.name] = post.resource_fields
 
 app.register_blueprint(api_bp, url_prefix='/api/')
-#app.register_blueprint(get.app, url_prefix='/api/get/')
-#app.register_blueprint(post.app, url_prefix='/api/post/')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
@@ -28,13 +27,4 @@ if __name__ == '__main__':
 def lambda_handler(event=None, context=None):
     
     return 'hello!'
-
-@api.route('/<name>', methods=['GET', 'POST'])
-def hello_name(name):
-    
-    return 'hello ' + name
-
-if __name__ == '__main__':
-    app.run()
-
 """
