@@ -1,48 +1,24 @@
-from flask import Flask,Blueprint, request
-from flask_restx import Api, Resource, Namespace, fields
-from routers.image import post_image
-from werkzeug.datastructures import FileStorage
-
+from flask import Flask, Blueprint
+from flask_restx import Api
+from routers import get, post
 
 app = Flask(__name__)
+# Blueprintの作成
+api_bp = Blueprint('api', __name__)
+api = Api(api_bp)
 
+api.add_namespace(get.ns)
+api.add_namespace(post.ns)
 
-api = Api(app, version='1.0', title='API', description='A simple API',default='practice',default_label='practice')
+# getモジュールでJson Bodyモデルを登録
+api.models[get.resource_fields.name] = get.resource_fields
 
-upload_parser = api.parser()
-upload_parser.add_argument('file', location='files',
-                           type=FileStorage, required=True)
+# postモジュールでJson Bodyモデルを登録
+api.models[post.resource_fields.name] = post.resource_fields
 
-
-resource_fields = api.model("Json Body", {
-    "key1": fields.String,
-    "key2": fields.Integer,
-    "key3": fields.Boolean,
-})
-@api.route('/image/<id>')
-@api.expect(upload_parser)
-class ImageConversion(Resource):
-    def post(self,id):
-        args = upload_parser.parse_args()
-        uploaded_file = args['file']  # This is FileStorage instance
-        return {'image': 'image', 'message': 'success', 'id': id, 'file': uploaded_file.filename}
-    
-    
-    
-@api.route('/hello')
-class HelloWorld(Resource):
-    def get(self):
-        return {'hello': 'world'}
-
-    
-@api.route('/name/<name>')
-class HelloName(Resource):
-    @api.doc(body=resource_fields)
-    def post(self, name):
-        body = request.json
-        return {
-            'hello': name,
-            'body': body,}
+app.register_blueprint(api_bp, url_prefix='/api/')
+#app.register_blueprint(get.app, url_prefix='/api/get/')
+#app.register_blueprint(post.app, url_prefix='/api/post/')
 
 if __name__ == '__main__':
     app.run(debug=True)
