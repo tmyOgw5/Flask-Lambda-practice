@@ -21,6 +21,7 @@ development/
 *.avi
 *.data
 *.json
+*.db
 
 *.cfg
 !cfg/yolov3*.cfg
