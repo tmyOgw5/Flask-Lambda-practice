@@ -5,4 +5,5 @@ zappa
 awscli
 
 flask-restx
-flask-sqlalchemy
+sqlalchemy
+pydantic
