@@ -1,7 +1,12 @@
 from flask import Blueprint, request
 from flask_restx import Api, Resource, Namespace, fields
 from werkzeug.datastructures import FileStorage
-#from database.database import db, UserPost
+from sqlalchemy.orm.session import Session
+from database import db_post
+from database.database import get_db
+
+
+
 
 # Blueprintの作成
 app = Blueprint('post', __name__)
@@ -16,6 +21,21 @@ resource_fields = api.model("Json Body", {
     "username": fields.String,
     "title": fields.String,
     "content": fields.String,
+})
+post_base_model = api.model('PostBase', {
+    'image_url': fields.String(required=True),
+    'title': fields.String(required=True),
+    'content': fields.String(required=True),
+    'creator': fields.String(required=True),
+})
+
+post_display_model = api.model('PostDisplay', {
+    'id': fields.Integer(readOnly=True),
+    'image_url': fields.String(required=True),
+    'title': fields.String(required=True),
+    'content': fields.String(required=True),
+    'creator': fields.String(required=True),
+    'timestamp': fields.DateTime(dt_format='rfc822'),
 })
 
 # Namespaceの作成
@@ -34,10 +54,13 @@ class FileUpload(Resource):
 
 @ns.route('/userpost/')
 class UserPost(Resource):
-    @ns.expect(resource_fields)
+    @api.expect(post_base_model)
+    @api.marshal_with(post_display_model)
     def post(self):
-        
-        return {'body': "body"}
+        db = get_db()  # Replace this with your actual db session getter
+        data = request.json
+        post = db_post.create_post(db, data)  # Replace this with your actual create method
+        return post
 
 # NamespaceをBlueprintに追加
 api.add_namespace(ns)
