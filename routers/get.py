@@ -1,4 +1,4 @@
-from flask import Blueprint, request
+from flask import Blueprint, request,render_template,make_response
 from flask_restx import Api, Resource, Namespace, fields
 from werkzeug.datastructures import FileStorage
 
@@ -23,9 +23,11 @@ resource_fields = api.model("Json Body", {
 # エンドポイントの定義
 @ns.route('/hello/')
 class HelloWorld(Resource):
+    @ns.produces(['text/html'])
     def get(self):
-        return {'hello': 'world'}
-
+        headers = {'Content-Type': 'text/html'}
+        return make_response(render_template('index.html'),200,headers)
+    
 @ns.route('/<name>')
 class HelloName(Resource):
     @ns.expect(resource_fields)
