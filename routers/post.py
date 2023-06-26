@@ -1,10 +1,11 @@
 from flask import Blueprint, request
 from flask_restx import Api, Resource, Namespace, fields
 from werkzeug.datastructures import FileStorage
+from werkzeug.utils import secure_filename
 from sqlalchemy.orm.session import Session
 from database import db_post
 from database.database import get_db
-
+import os
 
 
 
@@ -80,9 +81,21 @@ class FileUpload(Resource):
     def post(self):
         args = upload_parser.parse_args()
         uploaded_file = args['file']  # This is FileStorage instance
+        # make sure the filename is secure
+        filename = secure_filename(uploaded_file.filename)
+
+        # create images directory if not exists
+        if not os.path.exists('templates/images'):
+            os.makedirs('templates/images')
+
+        # save file to /templates/images
+        uploaded_file.save(os.path.join('templates/images', filename))
+
+        # construct url to the file
+        file_url = os.path.join('templates/images', filename)
 
 
-        return {'image': 'image', 'message': 'success', 'file': uploaded_file.filename}
+        return {'image': file_url, 'message': 'success', 'file': uploaded_file.filename}
     
 # NamespaceをBlueprintに追加
 api.add_namespace(ns)
