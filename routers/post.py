@@ -1,4 +1,4 @@
-from flask import Blueprint, request
+from flask import Blueprint, request,render_template,make_response
 from flask_restx import Api, Resource, Namespace, fields
 from werkzeug.datastructures import FileStorage
 from werkzeug.utils import secure_filename
@@ -6,6 +6,7 @@ from sqlalchemy.orm.session import Session
 from database import db_post
 from database.database import get_db
 import os
+
 
 
 
@@ -94,8 +95,9 @@ class FileUpload(Resource):
         # construct url to the file
         file_url = os.path.join('templates/images', filename)
 
-
-        return {'image': file_url, 'message': 'success', 'file': uploaded_file.filename}
+        headers = {'Content-Type': 'text/html'}
+        return make_response(render_template('index.html',image_path=file_url),200,headers)
+        #return {'image': file_url, 'message': 'success', 'file': uploaded_file.filename}
     
 # NamespaceをBlueprintに追加
 api.add_namespace(ns)

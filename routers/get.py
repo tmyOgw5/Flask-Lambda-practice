@@ -3,11 +3,11 @@ from flask_restx import Api, Resource, Namespace, fields
 from werkzeug.datastructures import FileStorage
 
 # Blueprintの作成
-app = Blueprint('get', __name__)
+app = Blueprint('practice', __name__)
 api = Api(app)
 
 # Namespaceの作成
-ns = Namespace('get', description='get api')
+ns = Namespace('practice', description='get api')
 
 # パーサーとモデルの定義
 upload_parser = api.parser()
